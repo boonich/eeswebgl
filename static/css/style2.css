@@ -1,0 +1,22 @@
+html, body, .container
+{
+	height: 100%;
+	min-height: 100%;
+}
+
+.input{
+	float: left;
+	width: 65%;
+	height: 100%;
+	background-color: white;
+}
+
+.pictures{
+	float: right;
+	width: 35%;
+	height: 100%;
+	background-color: white;
+}
+
+​
+
