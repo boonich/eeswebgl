@@ -1,0 +1,193 @@
+<html>
+    <link type="text/css" href="static/css/style2.css" rel="stylesheet" />
+<body>
+    <div class="container">
+      <div class="input">
+         <center><h1>EES ACCIDENT RECONSTRUCTION - INPUT DATA</h1></center>
+         <form action="/" method="POST">
+             <table style="width:100%">
+                 <tr>
+                    <th></th>
+                    <th colspan="3"><h3>Vehicle 1<h3></th>
+                    <th colspan="3"><h3>Vehicle 2<h3></th>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Vehicle name</b></td>
+                    <td colspan="3"><input type="text" name="Vehicle1" style="text-align:center;" value="VW - Rabbit"></td>
+                    <td colspan="3"><input type="text" name="Vehicle2" style="text-align:center;" value="MB - 240 TD"></td>
+                 </tr> 
+                 <tr>
+                    <td style="text-align:center"><b>Length</b></td> 
+                    <td>L1</td>
+                    <td><input type="text" name="L1" size="8" style="text-align:right;" value="3.725"></td>
+                    <td style="text-align:center">m</td>
+                    <td>L2</td>
+                    <td><input type="text" name="L2" size="8" style="text-align:right;" value="4.725"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Width</b></td>
+                    <td>W1</td>
+                    <td><input type="text" name="W1" size="8" style="text-align:right;" value="1.61"></td>
+                    <td style="text-align:center">m</td>
+                    <td>W2</td>
+                    <td><input type="text" name="W2" size="8" style="text-align:right;" value="1.786"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Overhang front</b></td>
+                    <td>OF1</td>
+                    <td><input type="text" name="OF1" size="8" style="text-align:right;" value="0.72"></td>
+                    <td style="text-align:center">m</td>
+                    <td>OF2</td>
+                    <td><input type="text" name="OF2" size="8" style="text-align:right;" value="0.795"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>CG to front axle</b></td>
+                    <td>CGFA1</td>
+                    <td><input type="text" name="CGFA1" size="8" style="text-align:right;" value="1.0"></td>
+                    <td style="text-align:center">m</td>
+                    <td>CGFA2</td>
+                    <td><input type="text" name="CGFA2" size="8" style="text-align:right;" value="1.3"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Wheelbase</b></td>
+                    <td>R1</td>
+                    <td><input type="text" name="R1" size="8" style="text-align:right;" value="2.4"></td>
+                    <td style="text-align:center">m</td>
+                    <td>R2</td>
+                    <td><input type="text" name="R2" size="8" style="text-align:right;" value="2.795"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Mass</b></td>
+                    <td>M1</td>
+                    <td><input type="text" name="M1" size="8" style="text-align:right;" value="880"></td>
+                    <td style="text-align:center">kg</td>
+                    <td>M2</td>
+                    <td><input type="text" name="M2" size="8" style="text-align:right;" value="1600"></td>
+                    <td style="text-align:center">kg</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Post impact velocity</b></td>
+                    <td>V1p</td>
+                    <td><input type="text" name="V1p" size="8" style="text-align:right;" value="35"></td>
+                    <td style="text-align:center">km/h</td>
+                    <td>V2p</td>
+                    <td><input type="text" name="V2p" size="8" style="text-align:right;" value="51"></td>
+                    <td style="text-align:center">km/h</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Post impact vel. angle</b></td>
+                    <td>Ny1p</td>
+                    <td><input type="text" name="Ny1p" size="8" style="text-align:right;" value="-9"></td>
+                    <td style="text-align:center">deg</td>
+                    <td>Ny2p</td>
+                    <td><input type="text" name="Ny2p" size="8" style="text-align:right;" value="182"></td>
+                    <td style="text-align:center">deg</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Rotation angle (POI to POR)</b></td>
+                    <td>Fi1p</td>
+                    <td><input type="text" name="Fi1p" size="8" style="text-align:right;" value="200"></td>
+                    <td style="text-align:center">deg</td>
+                    <td>Fi2p</td>
+                    <td><input type="text" name="Fi2p" size="8" style="text-align:right;" value="64"></td>
+                    <td style="text-align:center">deg</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Friction coeff. (rotation)</b></td>
+                    <td>MyR1</td>
+                    <td><input type="text" name="MyR1" size="8" style="text-align:right;" value="0.4"></td>
+                    <td style="text-align:center">-</td>
+                    <td>MyR2</td>
+                    <td><input type="text" name="MyR2" size="8" style="text-align:right;" value="0.3"></td>
+                    <td style="text-align:center">-</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Heading angle</b></td>
+                    <td>Psi1</td>
+                    <td><input type="text" name="Psi1" size="8" style="text-align:right;" value="0"></td>
+                    <td style="text-align:center">deg</td>
+                    <td>Psi2</td>
+                    <td><input type="text" name="Psi2" size="8" style="text-align:right;" value="184"></td>
+                    <td style="text-align:center">deg</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Preimpact angular vel.</b></td>
+                    <td>Om1</td>
+                    <td><input type="text" name="Om1" size="8" style="text-align:right;" value="0"></td>
+                    <td style="text-align:center">deg/s</td>
+                    <td>Om2</td>
+                    <td><input type="text" name="Om2" size="8" style="text-align:right;" value="0"></td>
+                    <td style="text-align:center">deg</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Preimpact vel. angle</b></td>
+                    <td>Ny1</td>
+                    <td><input type="text" name="Ny1" size="8" style="text-align:right;" value="0"></td>
+                    <td style="text-align:center">deg</td>
+                    <td>Ny2</td>
+                    <td><input type="text" name="Ny2" size="8" style="text-align:right;" value="0"></td>
+                    <td style="text-align:center">deg</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Energy Equivalent Speed</b></td>
+                    <td>EES1</td>
+                    <td><input type="text" name="EES1" size="8" style="text-align:right;" value="66"></td>
+                    <td style="text-align:center">km/h</td>
+                    <td>EES2</td>
+                    <td><input type="text" name="EES2" size="8" style="text-align:right;" value="42"></td>
+                    <td style="text-align:center">km/h</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Equiv. Test Deformation</b></td>
+                    <td>ETD1</td>
+                    <td><input type="text" name="ETD1" size="8" style="text-align:right;" value="1.52"></td>
+                    <td style="text-align:center">m</td>
+                    <td>ETD2</td>
+                    <td><input type="text" name="ETD2" size="8" style="text-align:right;" value="1.13"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Impact force arm</b></td>
+                    <td>SHA1</td>
+                    <td><input type="text" name="SHA1" size="8" style="text-align:right;" value="0.9"></td>
+                    <td style="text-align:center">m</td>
+                    <td>SHA2</td>
+                    <td><input type="text" name="SHA2" size="8" style="text-align:right;" value="1.1"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+                 <tr>
+                    <td style="text-align:center"><b>Impact force angle</b></td>
+                    <td>Rho1</td>
+                    <td><input type="text" name="Rho1" size="8" style="text-align:right;" value="53"></td>
+                    <td style="text-align:center">deg</td>
+                    <td>Rho2</td>
+                    <td><input type="text" name="Rho2" size="8" style="text-align:right;" value="47"></td>
+                    <td style="text-align:center">deg</td>
+                 </tr>                
+                 <tr>
+                    <td style="text-align:center"><b>POI to POR</b></td> 
+                    <td>s1</td>
+                    <td><input type="text" name="s1" size="8" style="text-align:right; "value="20"></td>
+                    <td style="text-align:center">m</td>
+                    <td>s2</td>
+                    <td><input type="text" name="s2" size="8" style="text-align:right;" value="19"></td>
+                    <td style="text-align:center">m</td>
+                 </tr>
+            </table></br>
+            <center><input type="submit" value="Calculate" style="font-size : 24px;"></center>
+        </form>
+    </div>
+
+    <div class="pictures">
+          <center><h1>INPUT PARAMETERS</h3></center><br/>
+          <center><img src="static/img/input_parameters.jpg" alt="Input Parameters" width="484px" height="349px"/></center><br/>
+          <center><img src="static/img/impact_parameters.jpg" alt="Input Parameters" width="326px" height="213px"/></center>
+    </div>
+  </div>​
+</body>
+</html>

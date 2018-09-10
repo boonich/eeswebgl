@@ -1,0 +1,509 @@
+$def with (output, L1, L2, W1, W2, OF1, OF2, CGFA1, CGFA2, R1, R2, Psi1, Psi2, Rho1, Rho2, CG1x, CG1y, CG2x, CG2y, Cx, Cy, Fi1p, Fi2p, Ny1p, Ny2p, s1, s2)
+
+<html>
+
+<head>
+<title>EES WebGL</title>
+<meta charset="utf-8">
+
+<link type="text/css" href="static/css/style1.css" rel="stylesheet" />
+<link rel="stylesheet" href="static/css/font-awesome.min.css">
+
+<script type="text/javascript" src="static/js/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="static/js/webgl-utils.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    void main(void) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_PointSize = 5.0;
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    var gl;
+    function initGL(canvas) {
+        try {
+            gl = canvas.getContext("experimental-webgl");
+            gl.viewportWidth = canvas.width;
+            gl.viewportHeight = canvas.height;
+        } catch (e) {
+        }
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+        }
+    }
+
+
+    function getShader(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
+
+    var shaderProgram;
+
+    function initShaders() {
+        var fragmentShader = getShader(gl, "shader-fs");
+        var vertexShader = getShader(gl, "shader-vs");
+
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+    }
+
+
+    var mvMatrix = mat4.create();
+    var mvMatrixStack = [];
+    var pMatrix = mat4.create();
+    
+    function mvPushMatrix() {
+        var copy = mat4.create();
+        mat4.set(mvMatrix, copy);
+        mvMatrixStack.push(copy);
+    }
+
+    function mvPopMatrix() {
+        if (mvMatrixStack.length == 0) {
+            throw "Invalid popMatrix!";
+        }
+        mvMatrix = mvMatrixStack.pop();
+    }
+
+
+    function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+    }
+    
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+    var veh1VertexPositionBuffer;
+    var veh2VertexPositionBuffer;
+    var cg1VertexPositionBuffer;
+    var cg2VertexPositionBuffer;
+    var cVertexPositionBuffer;
+    
+    function veh1() {
+        veh1VertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, veh1VertexPositionBuffer);
+        
+        var x1 = 0.0;
+        var y1 = 0.0;
+        var z1 = 0.0;
+        
+        var vertices = [
+            x1-$L1/2, y1+$W1/2, z1,
+            x1+$L1/2, y1+$W1/2, z1,
+            x1-$L1/2, y1-$W1/2, z1,
+            x1+$L1/2, y1-$W1/2, z1,
+            x1-$L1/2, y1+$W1/2, z1,
+            x1-$L1/2, y1-$W1/2, z1,
+            x1+$L1/2, y1+$W1/2, z1,
+            x1+$L1/2, y1-$W1/2, z1,
+            x1+$L1/2-$OF1, y1+$W1/2, z1,
+            x1+$L1/2-$OF1, y1-$W1/2, z1,
+            x1+$L1/2-$OF1-$R1, y1+$W1/2, z1,
+            x1+$L1/2-$OF1-$R1, y1-$W1/2, z1,
+            x1+$L1/2-$OF1, y1+$W1/2, z1,
+            x1+$L1/2, y1, z1,
+            x1+$L1/2-$OF1, y1-$W1/2, z1,
+            x1+$L1/2, y1, z1,
+            x1-($OF1+$R1)/2, y1+$W1/4, z1,
+            x1-($OF1+$R1)/2, y1-$W1/4, z1
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        veh1VertexPositionBuffer.itemSize = 3;
+        veh1VertexPositionBuffer.numItems = 18;
+    }
+    
+    function veh2() {
+        veh2VertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, veh2VertexPositionBuffer);
+        
+        var x2 = 0.0;
+        var y2 = 0.0;
+        var z2 = 0.0;
+        
+        vertices = [
+             x2-$L2/2, y2+$W2/2, z2,
+             x2+$L2/2, y2+$W2/2, z2,
+             x2-$L2/2, y2-$W2/2, z2,
+             x2+$L2/2, y2-$W2/2, z2,
+             x2-$L2/2, y2+$W2/2, z2,
+             x2-$L2/2, y2-$W2/2, z2,
+             x2+$L2/2, y2+$W2/2, z2,
+             x2+$L2/2, y2-$W2/2, z2,
+             x2+$L2/2-$OF2, y2+$W2/2, z2,
+             x2+$L2/2-$OF2, y2-$W2/2, z2,
+             x2+$L2/2-$OF2-$R2, y2+$W2/2, z2,
+             x2+$L2/2-$OF2-$R2, y2-$W2/2, z2,
+             x2+$L2/2-$OF2, y2+$W2/2, z2,
+             x2+$L2/2, y2, z2,
+             x2+$L2/2-$OF2, y2-$W2/2, z2,
+             x2+$L2/2, y2, z2,
+             x2-($OF2+$R2)/2+($L2/2-$OF2-$R2)/8, y2+$W2/4, z2,
+             x2-($OF2+$R2)/2+($L2/2-$OF2-$R2)/8, y2-$W2/4, z2,
+             x2-($OF2+$R2)/2-($L2/2-$OF2-$R2)/8, y2+$W2/4, z2,
+             x2-($OF2+$R2)/2-($L2/2-$OF2-$R2)/8, y2-$W2/4, z2
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        veh2VertexPositionBuffer.itemSize = 3;
+        veh2VertexPositionBuffer.numItems = 20;
+    }
+
+    function initBuffers() {
+        veh1();
+        
+        veh2();
+       
+        cg1VertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cg1VertexPositionBuffer);
+        
+        vertices = [
+             $CG1x, $CG1y, 0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cg1VertexPositionBuffer.itemSize = 3;
+        cg1VertexPositionBuffer.numItems = 1;
+        
+        cg2VertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cg2VertexPositionBuffer);
+        
+        vertices = [
+             0.0+$L2/2-$OF2-$CGFA2, 0.0, 0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cg2VertexPositionBuffer.itemSize = 3;
+        cg2VertexPositionBuffer.numItems = 1;
+        
+        cVertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cVertexPositionBuffer);
+        
+        vertices = [
+             $Cx, $Cy, 0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cVertexPositionBuffer.itemSize = 3;
+        cVertexPositionBuffer.numItems = 1;
+    }
+    
+    var rveh2 = $Psi2;
+    var rveh1 = $Psi1;
+    var tveh2 = 0.0;
+    var tveh1 = 0.0;
+    
+    var zoom = -55.0;
+    
+    var speed = 1.5;
+
+    function drawScene() {
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+        mat4.identity(mvMatrix);
+
+        mat4.translate(mvMatrix, [0.0, 0.0, zoom]);
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, cVertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.POINTS, 0, cVertexPositionBuffer.numItems);
+        
+        mat4.rotate(mvMatrix, $Psi1, [0, 0, 1]);
+        
+        mvPushMatrix();
+        
+        mat4.translate(mvMatrix, [tveh1*Math.cos($Ny1p), tveh1*Math.sin($Ny1p), 0.0]);
+        mat4.rotate(mvMatrix, degToRad(rveh1), [0, 0, 1]);
+        gl.bindBuffer(gl.ARRAY_BUFFER, veh1VertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, veh1VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.LINES, 0, veh1VertexPositionBuffer.numItems);
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, cg1VertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cg1VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.POINTS, 0, cg1VertexPositionBuffer.numItems);
+        
+        mvPopMatrix();
+        
+        mvPushMatrix();
+
+        mat4.translate(mvMatrix, [$CG2x+$L2/2-$OF2-$CGFA2, $CG2y, 0.0]);
+        mat4.rotate(mvMatrix, $Psi2, [0, 0, 1]);
+        
+        mat4.translate(mvMatrix, [tveh2*Math.cos($Ny2p), tveh2*Math.sin($Ny2p), 0.0]);
+        mat4.rotate(mvMatrix, degToRad(rveh2), [0, 0, 1]);        
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, veh2VertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, veh2VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.LINES, 0, veh2VertexPositionBuffer.numItems);
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, cg2VertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cg2VertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        setMatrixUniforms();
+        gl.drawArrays(gl.POINTS, 0, cg2VertexPositionBuffer.numItems);
+        
+        mvPopMatrix();
+    }
+   
+    var pause = false;
+    var lastTime = 0;
+
+    function animate() {
+            var timeNow = new Date().getTime();
+            if (lastTime != 0) {
+                var elapsed = timeNow - lastTime;
+                
+                if ($Fi1p < 0) {
+                    if (rveh1 > $Fi1p) {
+                        rveh1 -= ($Fi1p / $s1 * speed * elapsed) / -1000.0;
+                        if (rveh1 > 0) {
+                            rveh1 = 0.0
+                        }
+                    } else {
+                        rveh1 = $Fi1p;
+                    }
+                } else {   
+                    if (rveh1 < $Fi1p) {
+                        rveh1 += ($Fi1p / $s1 * speed * elapsed) / 1000.0;
+                        if (rveh1 < 0) {
+                            rveh1 = 0.0
+                        }
+                    } else {
+                        rveh1 = $Fi1p;
+                    }
+                }
+                
+                if ($Fi2p < 0) {
+                    if (rveh2 > $Fi2p) {
+                        rveh2 -= ($Fi2p / $s2 * speed * elapsed) / -1000.0;
+                        if (rveh2 > 0) {
+                            rveh2 = 0.0
+                        }
+                    } else {
+                        rveh2 = $Fi2p;
+                    }
+                } else {   
+                    if (rveh2 < $Fi2p) {
+                        rveh2 += ($Fi2p / $s2 * speed * elapsed) / 1000.0;
+                        if (rveh2 < 0) {
+                            rveh2 = 0.0
+                        }
+                    } else {
+                        rveh2 = $Fi2p;
+                    }
+                }
+                       
+                if (Math.cos($Ny2p) < 0) {              
+                    if (tveh2 > -$s2) {
+                        tveh2 -= (speed * elapsed) / 1000.0;
+                        if (tveh2 > 0) {
+                            tveh2 = 0.0
+                        }
+                    } else {
+                        tveh2 = -$s2;
+                    }
+                } else {
+                    if (tveh2 < $s2) {
+                       tveh2 += (speed * elapsed) / 1000.0;
+                    } else {
+                        tveh2 = $s2;
+                    }
+                }
+                
+                if (Math.cos($Ny1p) < 0) {              
+                    if (tveh1 > -$s1) {
+                        tveh1 -= (speed * elapsed) / 1000.0;
+                    } else {
+                        tveh1 = -$s1;
+                    }
+                } else {
+                    if (tveh1 < $s1) {
+                       tveh1 += (speed * elapsed) / 1000.0;
+                       if (tveh1 < 0) {
+                           tveh1 = 0.0
+                       }
+                    } else {
+                        tveh1 = $s1;
+                    }
+                }
+            }
+        
+            lastTime = timeNow;            
+    }
+
+
+    function tick() {
+    	   if(pause) return;
+        requestAnimFrame(tick);
+        
+        drawScene();
+        animate();
+    }
+
+    function webGLStart() {
+        var canvas = document.getElementById("canvas");
+        initGL(canvas);
+        initShaders();
+        initBuffers();
+
+        gl.clearColor(1.0, 1.0, 1.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+    }
+    
+    function ImpactPhase() {      
+        rveh2 = $Psi2;
+        rveh1 = $Psi1;
+        tveh2 = 0.0;
+        tveh1 = 0.0;
+        
+        pause = true;
+
+        drawScene();    
+    }
+    
+    function RestPhase() {     
+        rveh2 = $Fi2p;
+        rveh1 = $Fi1p;
+        tveh2 = -$s2;
+        tveh1 = $s1;
+        
+        pause = true;
+
+        drawScene();    
+    }
+    
+    function Animation() {
+        rveh2 = $Psi2;
+        rveh1 = $Psi1;
+        tveh2 = 0.0;
+        tveh1 = 0.0;
+        
+        pause = false;
+        
+        tick();    	     
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
+    }
+    
+    function PauseAnimation() {
+        pause = true;       
+    }
+    
+    function Clear() {            	 
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    
+    }
+    
+    function ZoomIn() {
+        zoom += 1.0;
+        drawScene();
+    }
+    
+    function ZoomOut() {
+        zoom -= 1.0;
+        drawScene();
+    }
+    
+    function SpeedUp() {
+        speed += 1.0;
+        drawScene();
+    }
+    
+    function SpeedDown() {
+        speed -= 1.0;
+        drawScene();
+    }
+
+</script>
+
+
+</head>
+
+
+<body onload="webGLStart();">
+    <div class="container">
+      <div class="results">
+      <center><h3>EES ACCIDENT RECONSTRUCTION RESULTS</h3><br/></center>
+      <h3><pre>$output.description
+      </pre></h3>
+      </div>
+      <div class="gl">
+          <center><h3>ACCIDENT VISUALIZATION</h3><br/></center>
+          <center><canvas id="canvas" style="border: none;" width="500" height="500"></canvas></center>
+          <center><button class="btn" onclick="ImpactPhase()" style="font-size : 24px;">Impact positions</button>
+	  <button class="btn" onclick="RestPhase()" style="font-size : 24px;">Rest positions</button>
+          <button class="btn" onclick="SpeedDown()"><i class="fa fa-fast-backward" style="font-size:24px"></i></button>
+          <button class="btn" onclick="Animation()"><i class="fa fa-play" style="font-size:24px"></i></button>
+          <button class="btn" onclick="PauseAnimation()"><i class="fa fa-pause" style="font-size:24px"></i></button>
+          <button class="btn" onclick="SpeedUp()"><i class="fa fa-fast-forward" style="font-size:24px"></i></button>
+          <button class="btn" onclick="Clear()"><i class="fa fa-eraser" style="font-size:24px"></i></button>
+          <button class="btn" onclick="ZoomIn()"><i class="fa fa-search-plus" aria-hidden="true" style="font-size:24px"></i></button>
+          <button class="btn" onclick="ZoomOut()"><i class="fa fa-search-minus" aria-hidden="true" style="font-size:24px"></i></button></center>
+      </div>
+    </div>​
+</body>
+
+</html>
