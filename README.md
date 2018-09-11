@@ -13,6 +13,12 @@ while the algorithms of the EES method can be found in:
 
 F. Zeidler et al.: "Accident Research and Accident Reconstruction by the EES-Accident Reconstruction Method," SAE Technical Paper 850256, 1985.
 
+# Prerequisites
+
+web.py is needed. You can install it, e.g., via pip:
+
+  pip install web.py
+
 # Installation
 
 The app can be run as a script in Python, e.g.:
