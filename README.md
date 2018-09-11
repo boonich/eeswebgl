@@ -23,7 +23,7 @@ which starts the web.py server on port 8080.
 
 To access the input page of the app open your browser and go to [http://localhost:8080/](http://localhost:8080/).
 
-In qpython (on android sytems) you can launch the app via the 'launch.py' script. You have to set the paths both in the launch script and in 'EESWebGL.py' for running the app.
+In qpython (on android systems) you can launch the app via the 'launch.py' script. You have to set the paths both in the launch script and in 'EESWebGL.py' for running the app.
 
 # Using the app
 
