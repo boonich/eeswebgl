@@ -16,15 +16,16 @@ F. Zeidler et al.: "Accident Research and Accident Reconstruction by the EES-Acc
 # Prerequisites
 
 web.py is needed. You can install it, e.g., via pip:
-
-  pip install web.py
+```
+pip install web.py
+```
 
 # Installation
 
 The app can be run as a script in Python, e.g.:
-
-  python EESWebGL.py
-
+```
+python EESWebGL.py
+```
 which starts the web.py server on port 8080.
 
 To access the input page of the app open your browser and go to [http://localhost:8080/](http://localhost:8080/).
