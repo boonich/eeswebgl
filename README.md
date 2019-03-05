@@ -15,9 +15,13 @@ F. Zeidler et al.: "Accident Research and Accident Reconstruction by the EES-Acc
 
 # Prerequisites
 
-web.py is needed. You can install it, e.g., via pip:
+web.py is needed. You can install it via pip (for Python 2):
 ```
 $ pip install web.py
+```
+or via pip (for Python 3):
+```
+$ pip install web.py==0.40-dev1
 ```
 
 # Installation
@@ -38,7 +42,9 @@ You can do a calculation with the predefined input data (or you can use data acc
 
 # Possible issues
 
-The animation code is tested only with head-on collisions. For other types some addition to the code is probably needed.
+- The animation code is tested only with head-on collisions. For other types some addition to the code is probably needed.
+- Currently there are some issues for rendering the webGL content on Windows systems (the webGL container with the buttons is displayed but with no content). On Linux systems (Ubuntu and Android) there seem to be no such issues.
+
 
 # License
 
