@@ -38,7 +38,13 @@ In qpython (on android systems) you can launch the app via the 'launch.py' scrip
 
 # Using the app
 
-You can do a calculation with the predefined input data (or you can use data according to your own cases) by clicking on the "Calculate" button. The results of the calculation are shown on a new page on the left side of the screen, while on the right you can run an animation of the post-impact phase. The buttons of the animation are pretty self-explanatory.
+You can do a calculation with the predefined input data (or you can use data according to your own cases) by clicking on the "Calculate" button.
+
+![input](images/input.png)
+
+The results of the calculation are shown on a new page on the left side of the screen, while on the right you can run an animation of the post-impact phase. The buttons of the animation are pretty self-explanatory.
+
+![results](images/results.png)
 
 # Possible issues
 
