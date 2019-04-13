@@ -11,15 +11,15 @@ H.-H. Schreier and W. D. Nelson: **"Applicability of the EES-Accident Reconstruc
 
 while the algorithms of the EES method can be found in:
 
-F. Zeidler et al.: **"Accident Research and Accident Reconstruction by the EES-Accident Reconstruction Method"**, SAE Technical Paper 850256, 1985.
+F. Zeidler et al.: **"Accident Research and Accident Reconstruction by the EES-Accident Reconstruction Method"**, *SAE Technical Paper* 850256, 1985.
 
 # Prerequisites
 
-The package `web.py` is needed. You can install it via pip (for Python 2):
+The package `web.py` is needed. You can install it via `pip` (for Python 2):
 ```
 $ pip install web.py
 ```
-or via pip (for Python 3):
+or via `pip` (for Python 3):
 ```
 $ pip install web.py==0.40-dev1
 ```
